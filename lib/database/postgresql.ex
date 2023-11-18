@@ -83,7 +83,7 @@ defimpl Plsm.Database, for: Plsm.Database.PostgreSQL do
             AND rc.unique_constraint_name = ccu.constraint_name
 
           WHERE lower(tc.constraint_type) in ('foreign key')
-          AND ccu.table_name = '#{tab_header.name}'s
+          AND ccu.table_name = '#{tab_header.name}'
         ) as f on a.attname = f.field
         WHERE pgc.oid = a.attrelid
         AND pg_table_is_visible(pgc.oid)
