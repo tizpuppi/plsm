@@ -34,7 +34,7 @@ defimpl Plsm.Database, for: Plsm.Database.PostgreSQL do
     {_, result} =
       Postgrex.query(
         db.connection,
-        "SELECT table_name FROM information_schema.tables WHERE table_schema = '#{db.schema}' and table_name != 'schema_migrations';",
+        "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' and table_schema = '#{db.schema}' and table_name != 'schema_migrations';",
         []
       )
 
@@ -83,8 +83,9 @@ defimpl Plsm.Database, for: Plsm.Database.PostgreSQL do
             AND rc.unique_constraint_name = ccu.constraint_name
 
           WHERE lower(tc.constraint_type) in ('foreign key')
+          AND ccu.table_name = '#{tab_header.name}'s
         ) as f on a.attname = f.field
-        WHERE a.attnum > 0 AND pgc.oid = a.attrelid
+        WHERE pgc.oid = a.attrelid
         AND pg_table_is_visible(pgc.oid)
         AND NOT a.attisdropped
         AND     a.attnum   > 0

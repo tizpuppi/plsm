@@ -22,6 +22,7 @@ defmodule Plsm.IO.Export do
   defp map_type(:date, _), do: ":date"
   defp map_type(:time, _), do: ":time"
   defp map_type(:timestamp, _), do: ":naive_datetime"
+  defp map_type(:naive_datetime, _), do: ":naive_datetime"
   defp map_type(:integer, true), do: ":id"
   defp map_type(:integer, _), do: ":integer"
   defp map_type(:uuid, _), do: "Ecto.UUID"
@@ -136,8 +137,8 @@ defmodule Plsm.IO.Export do
 
     trimmed_columns = remove_foreign_keys(table.columns, table.header.name)
 
-    max_name_wid = Enum.map(trimmed_columns, &byte_size(str(&1.name))) |> Enum.max()
-    max_type_wid = Enum.map(trimmed_columns, &byte_size(str(&1.type))) |> Enum.max()
+    max_name_wid = Enum.map(trimmed_columns, &byte_size(str(&1.name))) |> Enum.max(fn -> 0 end)
+    max_type_wid = Enum.map(trimmed_columns, &byte_size(str(&1.type))) |> Enum.max(fn -> 0 end)
 
     column_output =
       trimmed_columns
@@ -247,7 +248,6 @@ defmodule Plsm.IO.Export do
     output <> two_space("end\n")
   end
 
-  @spec belongs_to_output(String.t(), Plsm.Database.Column) :: String.t()
   defp belongs_to_output(proj_name, col) do
     col_name = col.name |> String.trim_trailing("_id")
     tab_name = Plsm.Database.TableHeader.table_name(col.foreign_table)

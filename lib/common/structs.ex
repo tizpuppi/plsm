@@ -14,31 +14,32 @@ defmodule Plsm.Config do
         }
 
   def load_config() do
-    mix_app = Mix.Project.config |> Keyword.fetch(:app)
+    mix_app = Mix.Project.config() |> Keyword.fetch(:app)
+
     {app_env, module, repo} =
-      with \
-        {:ok, app}      <- mix_app,
-        {:ok, [repo|_]} <- Application.fetch_env(app, :ecto_repos)
-      do
-        mod = app |> Atom.to_string |> Inflex.camelize()
+      with {:ok, app} <- mix_app,
+           {:ok, [repo | _]} <- Application.fetch_env(app, :ecto_repos) do
+        mod = app |> Atom.to_string() |> Inflex.camelize()
         {Application.get_env(app, repo), mod, repo}
       else
         :error when mix_app == :error ->
           {[], "Default", nil}
+
         :error ->
-          raise ArgumentError, message: "Missing config option ':ecto_repos' in application #{elem(mix_app, 1)}"
+          raise ArgumentError,
+            message: "Missing config option ':ecto_repos' in application #{elem(mix_app, 1)}"
       end
 
     database_config = %Plsm.Database{
-      server:       get_env(app_env, :hostname, :server, ""),
-      port:         get_env(app_env, :port),
-      database:     get_env(app_env, :database),
-      username:     get_env(app_env, :username, nil, ""),
-      password:     get_env(app_env, :password, nil, ""),
-      type:         get_adapter_type(repo),
-      schema:       Application.get_env(:plsm, :schema,     "public"),
-      typed_schema: Application.get_env(:plsm, :typed_schema,  false),
-      overwrite:    Application.get_env(:plsm, :overwrite,     false)
+      server: get_env(app_env, :hostname, :server, ""),
+      port: get_env(app_env, :port),
+      database: get_env(app_env, :database),
+      username: get_env(app_env, :username, nil, ""),
+      password: get_env(app_env, :password, nil, ""),
+      type: get_adapter_type(repo),
+      schema: Application.get_env(:plsm, :schema, "public"),
+      typed_schema: Application.get_env(:plsm, :typed_schema, false),
+      overwrite: Application.get_env(:plsm, :overwrite, false)
     }
 
     project_config = %Plsm.Config.Project{
@@ -67,19 +68,22 @@ defmodule Plsm.Config do
 
   defp get_env(app_env, key, plsm_key \\ nil, default \\ nil) do
     plsm_key = plsm_key || key
+
     case Keyword.fetch(app_env, key) do
       {:ok, val} -> val
-      :error     -> Application.get_env(:plsm, plsm_key, default)
+      :error -> Application.get_env(:plsm, plsm_key, default)
     end
   end
 
   defp get_adapter_type(nil), do: get_adapter_type2()
+
   defp get_adapter_type(repo) do
     try do
       apply(repo, :__adapter__, [])
-    rescue e ->
-      IO.puts("==> Cannot determine adapter type in repo '#{inspect(repo)}': #{e.message}")
-      get_adapter_type2() || :postgres
+    rescue
+      e ->
+        IO.puts("==> Cannot determine adapter type in repo '#{inspect(repo)}': #{e.message}")
+        get_adapter_type2() || :postgres
     end
   end
 
