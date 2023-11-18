@@ -248,7 +248,6 @@ defmodule Plsm.IO.Export do
     output <> two_space("end\n")
   end
 
-  @spec belongs_to_output(String.t(), Plsm.Database.Column) :: String.t()
   defp belongs_to_output(proj_name, col) do
     col_name = col.name |> String.trim_trailing("_id")
     tab_name = Plsm.Database.TableHeader.table_name(col.foreign_table)

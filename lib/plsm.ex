@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Plsm do
   use Mix.Task
+  @dialyzer {:nowarn_function, help: 0}
 
   @shortdoc "Creates Ecto schemas from the existing DB repository"
 
