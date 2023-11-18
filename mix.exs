@@ -8,7 +8,7 @@ defmodule Plsm.Mixfile do
       elixir: "~> 1.7",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      elixirc_paths: ["lib"] ++ (Mix.env() == :test && ["test/schemas"] || []),
+      elixirc_paths: ["lib"] ++ ((Mix.env() == :test && ["test/schemas"]) || []),
       description: description(),
       package: package(),
       deps: deps()
