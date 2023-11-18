@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Ecto.Gen.Schema do
+defmodule Mix.Tasks.Plsm do
   use Mix.Task
 
   @shortdoc "Creates Ecto schemas from the existing DB repository"
@@ -8,7 +8,7 @@ defmodule Mix.Tasks.Ecto.Gen.Schema do
 
   ## Examples
 
-    $ mix ecto.gen.schema
+    $ mix plsm
 
   ## Command line options
 
@@ -68,7 +68,7 @@ defmodule Mix.Tasks.Ecto.Gen.Schema do
 
   defp help() do
     IO.puts("""
-    Usage: mix ecto.gen.schema Options
+    Usage: mix plsm Options
 
     Options:
     ========
@@ -118,5 +118,5 @@ end
 defmodule Mix.Tasks.Plasm do
   use Mix.Task
 
-  def run(_), do: Mix.Tasks.Ecto.Gen.Schema.run(nil)
+  def run(_), do: Mix.Tasks.Plsm.run([])
 end
