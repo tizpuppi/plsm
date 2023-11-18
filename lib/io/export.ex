@@ -22,6 +22,7 @@ defmodule Plsm.IO.Export do
   defp map_type(:date, _), do: ":date"
   defp map_type(:time, _), do: ":time"
   defp map_type(:timestamp, _), do: ":naive_datetime"
+  defp map_type(:naive_datetime, _), do: ":naive_datetime"
   defp map_type(:integer, true), do: ":id"
   defp map_type(:integer, _), do: ":integer"
   defp map_type(:uuid, _), do: "Ecto.UUID"
